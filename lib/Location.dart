@@ -2,7 +2,7 @@ import 'package:geolocator/geolocator.dart';
 import 'dart:convert' as convert;
 import 'package:http/http.dart' as http;
 
-class weatherModel {
+class WeatherModel {
   var cityName;
   var latitude;
   var longtude;
@@ -35,12 +35,12 @@ class weatherModel {
   }
 }
 
-class controller1 {
+class Controller1{
   var _apiKey = "ee645b76d49faa05ff41d046c4e0d999";
   var _apiUrl;
 
-  Future<weatherModel> excute() async {
-    var k = weatherModel();
+  Future<WeatherModel> excute() async {
+    var k = WeatherModel();
     var _position = await Geolocator()
         .getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
     k.longtude = _position.longitude;
@@ -55,14 +55,14 @@ class controller1 {
     k.cityName = placemark[0].locality;
 
     var response = await http.get(this._apiUrl);
-
+    print(response.body);
     var json = convert.jsonDecode(response.body);
 
     var weatherIcon = json["weather"][0]["icon"];
 
     k.description = json["weather"][0]["description"];
     k.temprature = json["main"]["temp"];
-    k.weatherIconUrl = "http://openweathermap.org/img/wn/${weatherIcon}.png";
+    k.weatherIconUrl = "http://openweathermap.org/img/wn/$weatherIcon.png";
 
     return k;
   }

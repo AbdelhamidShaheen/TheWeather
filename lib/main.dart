@@ -84,10 +84,12 @@ class _WeatherState extends State<Weather> {
                       child: Container(
                         //color: Colors.green,
                         child: Card(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30)),
                           elevation: 20,
                           shadowColor: textColor,
                           child: Container(
-                            //color: Colors.orange,
+                            // color: Colors.orange,
                             margin: EdgeInsets.only(left: 20),
                             alignment: Alignment.center,
                             child: ListTile(
@@ -121,6 +123,7 @@ class _WeatherState extends State<Weather> {
                               ),
                               leading: Image.network(
                                 this.weatherIconUrl,
+                                scale: 0.5,
                               ),
                             ),
                           ),
@@ -133,6 +136,12 @@ class _WeatherState extends State<Weather> {
                         constraints: BoxConstraints.expand(),
                         alignment: Alignment.center,
                         child: RaisedButton(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(10),
+                                  topRight: Radius.circular(10),
+                                  bottomLeft: Radius.circular(30),
+                                  bottomRight: Radius.circular(30))),
                           color: buttonColor,
                           onPressed: () {
                             dialog.show();
@@ -179,17 +188,19 @@ class _WeatherState extends State<Weather> {
     }
   }
 
-  Future<void> _initApp() async {
-    var x = await controller1().excute();
-    if (x != null) {
-      dialog.hide();
-      setState(() {
-        this.cityName = x.getcityName();
-        this.description = x.getDescription();
-        double a = x.getTemprature();
-        this.temprature = a.toInt().toString();
-        this.weatherIconUrl = x.getWeatherIconUrl();
-      });
-    }
+  void _initApp() {
+    Future<WeatherModel> process = Future(() {
+      return Controller1().excute();
+    });
+    process.then((v) => {
+          setState(() {
+            this.cityName = v.getcityName();
+            this.description = v.getDescription();
+            double a = v.getTemprature();
+            this.temprature = a.toInt().toString();
+            this.weatherIconUrl = v.getWeatherIconUrl();
+          })
+        });
+    process.whenComplete(() => dialog.hide());
   }
 }
